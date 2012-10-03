@@ -1,0 +1,9 @@
+%model
+x'=r*x*(1-x/K)-c*x^p/(x^p+h)
+%commands
+r=1;
+%ax x x [0 1];
+K=10;
+c=1;
+h=1;
+p=2;

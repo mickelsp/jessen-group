@@ -1,0 +1,7 @@
+%z (position in centimeters) beamsize (1/e^2 radius in mm)
+150  1.01
+-250 1.0036
+70  1.02
+-40 1.01
+150  1.12
+180  1.17

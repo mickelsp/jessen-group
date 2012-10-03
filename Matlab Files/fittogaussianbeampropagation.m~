@@ -1,0 +1,10 @@
+%% Gaussian beam propagation fitting function
+function beamsize = myfitfunction(coeffs, data);
+waist = coeffs(1);
+
+x = data(:, 1); % Split the data matrix into x and y vectors
+lambda = data(1,2); %[m] wavelength of light
+numberofpoints=data(:,4);%matrix in which each entry is the number of points 
+sqrtnumbpoints=sqrt(numberofpoints(1,1)); %sqrt of number of points
+
+Z =
