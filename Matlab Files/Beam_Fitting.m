@@ -14,9 +14,9 @@ errorflag = 1; %1 to include error bars as weights in fitting; 0 otherwise
 %% Import data
 %%%Data should be in 2 column format: longitudinal position (z) and 1/e^2
 %%%radius of the beam at that longitudinal position
-%%filename = char('\\magnesium.rice.edu\Docs\testdata.dat'); %%Windows path format
-%%filename = char('/Users/Work/Documents/Analysis/M files/testdata.dat'); %%Macintosh path format; slashes in opposite direction!
-filename = char('/Users/work/Documents/Nanofibers/MOT Lasers/Beam Characterization/2988 Fiber Coupling/Toptica_2988_Fiber_Output.txt'); %%Macintosh path format; slashes in opposite direction!
+filepath = char('/Users/work/Documents/Nanofibers/MOT Lasers/Beam Characterization/2988 Fiber Coupling/');
+inputfilename = char('Toptica_2988_FiberLink_BackwardsOutput_20130215.txt');
+filename = strcat(filepath,inputfilename);
 [z beamsize]=textread(filename, '%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in mm
 
 %% Data preparation
@@ -42,7 +42,7 @@ fitwaistposition = P(2) %[m] longitudinal position of minimum beam size
 
 %% Generate vector that represents the fit to the points
 stepsize = (max(z)-min(z))/100;
-fitz=-2:.1:2; %fitz = min(z):stepsize:max(z);
+fitz=-2:.001:2; %fitz = min(z):stepsize:max(z);
 zR = pi*fitwaist^2/lambda; %[m] Rayleigh range of the beam
 fitbeamsize = fitwaist.*sqrt(1+((fitz-fitwaistposition)./zR).^2);%[m] 1/e^2 beam size as a function of z position
 
@@ -55,8 +55,9 @@ else
 end
 hold on
 plot(fitz(:).*1e2,fitbeamsize(:).*1e3,'-k','LineWidth',1.2)
-ylim([0 (max(beamsize(:))+0.1.*max(beamsize(:))).*1e3]);
-%xlim([-300 300]);
+%ylim([0 (max(beamsize(:))+0.1.*max(beamsize(:))).*1e3]);
+ylim([0 1.7]);
+xlim([-100 200]);
 set(gca,'FontSize',fontsize,'FontWeight','bold');
 xlabel('Longitudinal Position [cm]','FontSize',fontsize,'FontWeight','bold');
 ylabel('1/e^2 Beam Radius [mm]','FontSize',fontsize,'FontWeight','bold');
@@ -64,4 +65,4 @@ text(min(fitz.*1e2),max(fitbeamsize.*1e3),strcat('w0 = ',num2str(fitwaist.*1e3,3
 text(min(fitz.*1e2),max(fitbeamsize.*1e3)-max(fitbeamsize.*1e3)./50,strcat('z0 = ',num2str(fitwaistposition.*1e2,3),' cm'),'FontSize',fontsize,'FontWeight','bold');
 %text(min(fitz.*1e2),1.2,strcat('w_0 = ',num2str(fitwaist.*1e3,3),' mm'),'FontSize',fontsize,'FontWeight','bold');
 %text(min(fitz.*1e2),1,strcat('z_0 = ',num2str(fitwaistposition.*1e2,3),' cm'),'FontSize',fontsize,'FontWeight','bold');
-title('Toptica 2989 Output from Box','FontSize',fontsize,'FontWeight','bold');
+%title('894 nm input to Nanofiber','FontSize',fontsize,'FontWeight','bold');

@@ -11,8 +11,8 @@ shortcut1090 = 1; %1 if you want to use positions of only 90% and 10% maximum po
 if shortcut1090==1
     %% Import data
     filepath = char('/Users/work/Documents/Nanofibers/MOT Lasers/Beam Characterization/2988 Fiber Coupling/');
-    inputfilename = char('Toptica_2988_Fiber_Output.dat');
-    outputfilename = char('Toptica_2988_Fiber_Output.txt');
+    inputfilename = char('Toptica_2988_FiberLink_BackwardsOutput_20130215.dat');
+    outputfilename = char('Toptica_2988_FiberLink_BackwardsOutput_20130215.txt');
     filename = strcat(filepath,inputfilename);
     [measurementposition data90 data10]=textread(filename,'%f%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in um
     
@@ -29,7 +29,7 @@ if shortcut1090==1
     %xlim([0 1.13]);
     ylim([0 max(waistsize(:))+0.1.*max(waistsize(:))]);
     %legend('Vertical Size','Horizontal Size','Location','best');
-    title('Beam Profile of 2988 Laser','FontSize',fontsize,'FontWeight','bold');
+    %title('Beam Profile of 2988 Laser','FontSize',fontsize,'FontWeight','bold');
     
 else
     measurementposition = [4.32 6.7]; %[cm] position relative to beam's zero point
@@ -83,7 +83,7 @@ else
         xlabel('Knife Edge Position [mm]','FontSize',fontsize,'FontWeight','bold');
         ylabel('Measured Power [W]','FontSize',fontsize,'FontWeight','bold');
         text(mean(xdata)+0.2,mean(ydata),strcat('1/e^2 radius = ',num2str(abs(2*sigma)),' mm'),'FontSize',fontsize,'FontWeight','bold');
-        title(strcat('Beam Size at z = ',num2str(measurementposition(i)),' cm'),'FontSize',fontsize,'FontWeight','bold');
+        %title(strcat('Beam Size at z = ',num2str(measurementposition(i)),' cm'),'FontSize',fontsize,'FontWeight','bold');
         
         waistsize(i) = abs(2*sigma); %[mm] 1/e^2 radius of laser beam in mm
         peakpower(i) = abs(A); %[W] power of laser beam in watts
