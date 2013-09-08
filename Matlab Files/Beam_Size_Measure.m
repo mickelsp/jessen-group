@@ -10,11 +10,11 @@ shortcut1090 = 1; %1 if you want to use positions of only 90% and 10% maximum po
 
 if shortcut1090==1
     %% Import data
-    filepath = char('/Users/work/Documents/Nanofibers/MOT Lasers/Beam Characterization/2988 Fiber Coupling/');
-    inputfilename = char('Toptica_2988_FiberLink_BackwardsOutput_20130215.dat');
-    outputfilename = char('Toptica_2988_FiberLink_BackwardsOutput_20130215.txt');
+    filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Probe Beam Profiling/After Nanofiber/');
+    inputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130906.dat');
+    outputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130906.txt');
     filename = strcat(filepath,inputfilename);
-    [measurementposition data90 data10]=textread(filename,'%f%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in um
+    [measurementposition,data90,data10]=textread(filename,'%f%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in um
     
     %% Calculate waist size based on Siegman formula (see p. 94 Pascal's Lab Notebook 1
     waistsize = abs(data90-data10)./1.28; %[um] 1/e^2 beam radius as a function of measurement position along length of beam
