@@ -14,8 +14,8 @@ errorflag = 1; %1 to include error bars as weights in fitting; 0 otherwise
 %% Import data
 %%%Data should be in 2 column format: longitudinal position (z) and 1/e^2
 %%%radius of the beam at that longitudinal position
-filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Probe Beam Profiling/After Nanofiber/');
-inputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130906.txt');
+filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Blue-detuned Laser Profiling/Telescope 2 Output Side/');
+inputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130906_redcoord.txt');
 filename = strcat(filepath,inputfilename);
 [z beamsize]=textread(filename,'%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in mm
 
