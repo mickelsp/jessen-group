@@ -14,7 +14,7 @@ errorflag = 1; %1 to include error bars as weights in fitting; 0 otherwise
 %% Import data
 %%%Data should be in 2 column format: longitudinal position (z) and 1/e^2
 %%%radius of the beam at that longitudinal position
-filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Blue-detuned Laser Profiling/Telescope 1 Output Side/');
+filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Blue-detuned Laser Profiling/Telescope 2 Output Side/');
 inputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130912_redcoord.txt');
 filename = strcat(filepath,inputfilename);
 [z beamsize]=textread(filename,'%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in mm
@@ -42,7 +42,7 @@ fitwaistposition = P(2) %[m] longitudinal position of minimum beam size
 
 %% Generate vector that represents the fit to the points
 stepsize = (max(z)-min(z))/100;
-fitz=-3:.001:4; %fitz = min(z):stepsize:max(z);
+fitz=-3:.001:3; %fitz = min(z):stepsize:max(z);
 zR = pi*fitwaist^2/lambda; %[m] Rayleigh range of the beam
 fitbeamsize = fitwaist.*sqrt(1+((fitz-fitwaistposition)./zR).^2);%[m] 1/e^2 beam size as a function of z position
 
