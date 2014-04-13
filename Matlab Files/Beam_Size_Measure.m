@@ -10,9 +10,9 @@ shortcut1090 = 1; %1 if you want to use positions of only 90% and 10% maximum po
 
 if shortcut1090==1
     %% Import data
-    filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Blue-detuned Laser Profiling/Telescope 1 Output Side/');
-    inputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130912_redcoord.dat');
-    outputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130912_redcoord.txt');
+    filepath = char('/Users/work/Documents/Arizona/Nanofibers/Laser Profiling/Probe Beam Profiling/Before Fiber Link/');
+    inputfilename = char('ProbeLaser_FiberLink_ReverseOutput_20131008.dat');
+    outputfilename = char('ProbeLaser_FiberLink_ReverseOutput_20131008.txt');
     filename = strcat(filepath,inputfilename);
     [measurementposition,data90,data10]=textread(filename,'%f%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in um
     

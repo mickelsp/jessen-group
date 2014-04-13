@@ -1,81 +1,59 @@
-### Gaussian Beam Fitting
-#For list of 1/e^2 sizes and positions, fit to beam propagation equation
-#to get Rayleigh range, waist position, and waist size of beam
-#Future additions: simultaneous fitting in both x and y transverse dimensions
+## Gaussian Beam Fitting
+# For list of 1/e^2 sizes and positions, fit to beam propagation equation to get Rayleigh range, waist position, and waist size of beam
+# Future additions: simultaneous fitting in both x and y transverse dimensions
 
-import numpy as np #import numpy functions
-import scipy as sp #import scipy functions
-#import matplotlib as mpl #import matplotlib functions
-import csv #import csv functions
+import numpy as np                # Import numpy functions
+import scipy.optimize as optimize # Import optimize function for least squares fitting
+import matplotlib.pyplot as plt          # Import matplotlib functions
 
-###Initialization
-fontsize = 16;
-laserlambda = 690e-9; #[m] wavelength of the laser beam
-errorflag = 1; #1 to include error bars as weights in fitting; 0 otherwise
+plt.close()
 
-###Import data
-#Data should be in 2 column format: longitudinal position (z) and 1/e^2 radius of the beam at that longitudinal position
-directoryname = '/Users/work/Documents/Nanofibers/Laser Profiling/Probe Beam Profiling/After Nanofiber/'; 
-inputfilename = 'ProbeLaser_NanofiberOutput_Telescope1_20130906.dat';
-filename = directoryname + inputfilename;
-z = []; beamsize=[]; #initialize vectors
-inputfile = open(filename, 'r') #open file for reading
-for line in inputfile:
-	line = line.strip() #read in a line at a time
-	if not line.startswith("%"): #only read a line if it doesn't start with "%", the comment symbol I've been using in Matlab.
-		columns = line.split()
-		z = z + [float(columns[0])]; #append value of z from this line to the list of z values
-		beamsize = beamsize + [float(columns[1])];
-inputfile.close()
+## Initialization
+fontsize = 16         # Font size for plotting
+laserlambda = 894e-9  #[m] wavelength of the laser beam
+errorflag = 0         #1 to include error bars as weights in fitting; 0 otherwise
 
-###Convert lists into numeric vectors
-z = np.array(z); #[cm]
-beamsize = np.array(beamsize); #[um]
+## Import data
+# Data should be in 2-column format: longitudinal position (z) and 1/e^2 radius of the beam at that longitudinal position
+directoryName = '/Users/work/Documents/Arizona/Nanofibers/Laser Profiling/Probe Beam Profiling/Before Fiber Link/'
+inputFileName = 'ProbeLaser_FiberLink_ReverseOutput_20131008.txt'
+fileName = directoryName + inputFileName
+importedData = np.loadtxt(fileName)
 
-###Data preparation
-z = z*1e-2; #[m] converts z from cm to m
-beamsize = beamsize*1e-3; #[m] converts beamsize from mm to m
-lambdavector = np.zeros(len(z));
-lambdavector[0] = laserlambda;
+zData = importedData[0]         #[cm] Longitudinal position along laser beam
+beamSize = importedData[1]      #[mm] Transverse position across laser beam
 
-###Fitting
+## Data preparation
+zData = zData*1e-2              #[m] converts z from cm to m
+beamSize = beamSize*1e-3        #[m] converts beamSize from mm to m
+
+## Fitting
 #Fit to beam propagation equation
-def func(z,waist,z0):
-  return waist * sqrt(1 + ( (z - z0) * laserlambda / (pi * waist**2) )**2)
+def GaussianPropagate(z,p):
+  return p[0] * np.sqrt(1 + ( (z - p[1]) * laserlambda / (np.pi * p[0]**2) )**2)
   
-z = np.linspace(-4,0.001,4)
-fitfunc = func(z,waist,zo);
-fitfuncn = fitfunc + 0.2*np.random.normal(size=len(z));
+def residuals(p,y,z):
+  return y - GaussianPropagate(z,p)
 
-popt, pcov = optimize.curve_fit(func,z,fitfuncn)
+waistGuess = 0.1e-3     #[m] Initial guess for waist value
+zGuess = -0.7          #[m] Initial guess for position of waist
 
-InitialGuess=np.array([1e-4,3]); #[m m] initial guess for waist value and position of waist
-#datamatrix = [z(:) lambdavector(:)]; %[m m] data matrix contains both the values to be fitted and the fixed parameter (laser wavelength)
-#if errorflag==1
-#    errorvector = beamsize./beamsize; %weight all points equally in absence of better information
-#    %errorvector=[0.8 0.4 0.4 0.2 0.1];
-#    [P,r,J]=nlinfitweight(datamatrix,beamsize(:),@fittogaussianbeampropagation,InitialGuess,errorvector(:));
-#else
-#    [P,r,J]=nlinfit(datamatrix,beamsize(:),@fittogaussianbeampropagation,InitialGuess);
-#end
+plsq = optimize.leastsq(residuals,[waistGuess,zGuess],args = (beamSize,zData))
+fitWaist = plsq[0][0]         #[m] waist size; minimum beam size
+fitWaistPosition = plsq[0][1] #[m] longitudinal position of minimum beam size
 
-#fitwaist = P(1) %[m] waist size; minimum beam size
-#fitwaistposition = P(2) %[m] longitudinal position of minimum beam size
+zFit = np.arange(-1,2,0.001)
+beamPropagate = GaussianPropagate(zFit,[fitWaist,fitWaistPosition])#+0.00065
+#beamPropagateGuess = GaussianPropagate(zFit,[0.35e-3,0.7])+0.00145
 
-###Plot waist size versus distance from lens
-#figure(1)
-#plot(measurementposition(:),waistsize(:),'sr','MarkerFaceColor','r');
-#hold on
-#set(gca,'FontSize',fontsize,'FontWeight','bold');
-#xlabel('Longitudinal Position [cm]','FontSize',fontsize,'FontWeight','bold');
-#ylabel('Waist Size [mm]','FontSize',fontsize,'FontWeight','bold');
-#%xlim([0 1.13]);
-#ylim([0 max(waistsize(:))+0.1.*max(waistsize(:))]);
-#%legend('Vertical Size','Horizontal Size','Location','best');
-#%title('Beam Profile of 2988 Laser','FontSize',fontsize,'FontWeight','bold');
-
-#Manually test
-print z
-print beamsize
-print InitialGuess
-print 'status = done'
+## Plot waist size versus distance from lens
+plt.figure(1)
+plt.plot(zData,beamSize,'sr',label="Measurements")
+plt.plot(zFit,beamPropagate,'--b',label="Best Fit")
+#plt.plot(zFit,beamPropagateGuess,'--g')
+plt.xlabel('Longitudinal Position [m]')
+plt.ylabel('Waist Size [mm]')
+plt.text(0.05*np.mean(zData),1.1*np.mean(beamPropagate),'1/$e^2$ radius = '+ str(round(fitWaist,5)) + ' m')
+plt.text(0.05*np.mean(zData),1.05*np.mean(beamPropagate),'z$_0$ = '+ str(round(fitWaistPosition,4)) + ' m')
+plt.legend(bbox_to_anchor=(0, 0, 1, 1), bbox_transform=plt.gcf().transFigure)
+plt.title('Beam Profile of Nd:YAG Laser')

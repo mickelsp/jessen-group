@@ -8,14 +8,14 @@ clear all
 
 %% Initialization
 fontsize = 16;
-lambda = 690e-9; %[m] wavelength of the laser beam
+lambda = 894e-9; %[m] wavelength of the laser beam
 errorflag = 1; %1 to include error bars as weights in fitting; 0 otherwise
 
 %% Import data
 %%%Data should be in 2 column format: longitudinal position (z) and 1/e^2
 %%%radius of the beam at that longitudinal position
-filepath = char('/Users/work/Documents/Nanofibers/Laser Profiling/Blue-detuned Laser Profiling/Telescope 1 Output Side/');
-inputfilename = char('ProbeLaser_NanofiberOutput_Telescope1_20130912_redcoord.txt');
+filepath = char('/Users/work/Documents/Arizona/Nanofibers/Laser Profiling/Probe Beam Profiling/Before Fiber Link/');
+inputfilename = char('ProbeLaser_FiberLink_ReverseOutput_20131008.txt');
 filename = strcat(filepath,inputfilename);
 [z beamsize]=textread(filename,'%f%f','commentstyle','matlab'); %read in data file, z in cm and beamsize in mm
 
@@ -27,7 +27,7 @@ lambdavector(1) = lambda;
 
 %% Fitting
 %%%Fit to beam propagation equation
-InitialGuess=[1e-4 3]; %[m m] initial guess for waist value and position of waist
+InitialGuess=[1e-4 1]; %[m m] initial guess for waist value and position of waist
 datamatrix = [z(:) lambdavector(:)]; %[m m] data matrix contains both the values to be fitted and the fixed parameter (laser wavelength)
 if errorflag==1
     errorvector = beamsize./beamsize; %weight all points equally in absence of better information
@@ -42,7 +42,7 @@ fitwaistposition = P(2) %[m] longitudinal position of minimum beam size
 
 %% Generate vector that represents the fit to the points
 stepsize = (max(z)-min(z))/100;
-fitz=-3:.001:4; %fitz = min(z):stepsize:max(z);
+fitz=-2:.001:2; %fitz = min(z):stepsize:max(z);
 zR = pi*fitwaist^2/lambda; %[m] Rayleigh range of the beam
 fitbeamsize = fitwaist.*sqrt(1+((fitz-fitwaistposition)./zR).^2);%[m] 1/e^2 beam size as a function of z position
 
@@ -56,7 +56,7 @@ end
 hold on
 plot(fitz(:).*1e2,fitbeamsize(:).*1e3,'-k','LineWidth',1.2)
 %ylim([0 (max(beamsize(:))+0.1.*max(beamsize(:))).*1e3]);
-ylim([0 1.9]);
+%ylim([0 1.9]);
 %xlim([50 150]);
 set(gca,'FontSize',fontsize,'FontWeight','bold');
 xlabel('Longitudinal Position [cm]','FontSize',fontsize,'FontWeight','bold');

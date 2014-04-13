@@ -10,13 +10,13 @@ clear all
 %% Initialization
 fontsize = 16;
 lambda = 1064e-9; %[m] wavelength of the beam
-z = -1:0.0001:2; %[m] longitudinal position
+z = -1:0.0001:3; %[m] longitudinal position
 
 %% Incoming beam characteristics
 %%%Incoming beam characteristics could be derived from measurement or they
 %%%could be arbitrarily chosen if one were designing a system from scratch.
-w0 = 3.35e-4; %[m] 1/e^2 radius of beam at its maximum intensity
-z0 = -1.82; %[m] position of the minimum beam size in lab coordinate system
+w0 = 1.08e-3; %[m] 1/e^2 radius of beam at its maximum intensity
+z0 = 3.09; %[m] position of the minimum beam size in lab coordinate system
 zR = pi*w0^2/lambda; %[m] Rayleigh range of the beam
 
 qinitialinverse = -1i.*lambda./(pi.*w0.^2); %[1/m] value of the inverse of the complex beam parameter at the waist of the incoming beam
@@ -25,8 +25,8 @@ qinitialinversevector = ABCDmatrix_FreeSpace(qinitialinverse,z-z0); %[1/m] vecto
 incomingbeamsize = BeamSizeFunction(lambda,qinitialinversevector); %[m] beam size as a function of z position
 
 %% Lens 1 Beam Characteristics
-f1 = 150e-3; %[m] focal length of lens 1
-z1 = 0.010; %[m] position of lens 1 relative to waist of incoming beam
+f1 = -200e-3; %[m] focal length of lens 1
+z1 = -1.08; %[m] position of lens 1 relative to waist of incoming beam
 zlens1 = z0+z1; %[m] position of lens 1 relative to lab coordinate system
 
 qbeforelens1inverse=ABCDmatrix_FreeSpace(qinitialinverse,z1); %[1/m] value of the inverse of the complex beam parameter just before lens 1
@@ -53,7 +53,7 @@ figure(1)
 hold on
 plot(z(1:end).*1e2,incomingbeamsize(1:end).*1e3,'-k','LineWidth',1.5) %plots size of beam after lens 2 over entire z range of interest
 plot(z(1:end).*1e2,afterlens1beamsize(1:end).*1e3,'-g','LineWidth',1.5) %plots size of beam after lens 3 over entire z range of interest
-plot(z(1:end).*1e2,afterlens2beamsize(1:end).*1e3,'-r','LineWidth',1.5) %plots size of beam after lens 3 over entire z range of interest
+%plot(z(1:end).*1e2,afterlens2beamsize(1:end).*1e3,'-r','LineWidth',1.5) %plots size of beam after lens 3 over entire z range of interest
 set(gca,'FontSize',fontsize,'FontWeight','bold');
 xlabel('Longitudinal Position [cm]','FontSize',fontsize,'FontWeight','bold');
 ylabel('1/e^2 Beam Radius [mm]','FontSize',fontsize,'FontWeight','bold');
